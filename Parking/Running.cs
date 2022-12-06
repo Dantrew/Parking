@@ -20,6 +20,7 @@ namespace Parking
             Console.WriteLine("F Add parkinghouse.");
             Console.WriteLine("G Cities.");
             Console.WriteLine("H Add city.");
+            Console.WriteLine("I Parkingslots. ");
             Console.WriteLine("Q Quit.");
 
             ConsoleKeyInfo key = Console.ReadKey();
@@ -31,19 +32,19 @@ namespace Parking
                     Methods.GetAllCars();
                     break;
                 case 's':
-            Console.WriteLine("Enter plate info: ");
-            var plate = Console.ReadLine();
-            Console.WriteLine("Enter car brand: ");
-            var make = Console.ReadLine();
-            Console.WriteLine("Enter car color: ");
-            var color = Console.ReadLine();
+                    Console.WriteLine("Enter plate info: ");
+                    var plate = Console.ReadLine();
+                    Console.WriteLine("Enter car brand: ");
+                    var make = Console.ReadLine();
+                    Console.WriteLine("Enter car color: ");
+                    var color = Console.ReadLine();
 
-            var newCar = new Models.Car
-            {
-                Plate = plate,
-                Make = make,
-                Color = color
-            };
+                    var newCar = new Models.Car
+                    {
+                        Plate = plate,
+                        Make = make,
+                        Color = color
+                    };
                     Methods.AddCar(newCar);
                     break;
                 case 'd':
@@ -73,6 +74,24 @@ namespace Parking
                         CityName = cityName
                     };
                     Methods.AddCities(newCity);
+                    break;
+                case 'i':
+                    Methods.GetAllParkingSlots();
+                    break;
+                case 'j':
+                    Console.WriteLine("Amount of new parkingslots: ");
+                    int number = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("How many slots with electric outlets? ");
+                    int number2 = Convert.ToInt32(Console.ReadLine());
+                    for (int i = 0; i < number; i++)
+                    {
+                        var slotNumber = i;
+
+                        if (i < number2)
+                        {
+                            var electricOutlet = true;
+                        }
+                    }
                     break;
                 case 'q':
                     //Avsluta

@@ -91,9 +91,38 @@ namespace Parking
             }
         }
 
+        public static List<ParkingSlot> GetAllParkingSlots()
+        {
+            var sql = "SELECT * FROM ParkingSlots";
+            var parkingSlots = new List<Models.ParkingSlot>();
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                parkingSlots = connection.Query<Models.ParkingSlot>(sql).ToList();
+            }
+            foreach (var ps in parkingSlots)
+            {
+                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\t{ps.ElectricOutlet}\t{ps.ParkingHouseId}");
+            }
+            return parkingSlots;
+        }
+
+        public static void AddParkingSlots(ParkingSlot parkingSlot)
+        {
+            int affectedRows = 0;
+            var sql = $"insert into ParkingSlots(SlotNumber, ElectricOutlet, ParkingHouseID) values ('{parkingSlot.SlotNumber}', '{parkingSlot.ElectricOutlet}', '{parkingSlot.ParkingHouseId}')";
+            using (var connection = new SqlConnection(connString))
+            {
+                affectedRows = connection.Execute(sql);
+            }
+        }
+
+
         public static void Instructions()
         {
             Console.WriteLine("Välj funktion från menyn");
         }
     }
 }
+
+
