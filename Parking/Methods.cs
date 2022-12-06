@@ -122,6 +122,35 @@ namespace Parking
         {
             Console.WriteLine("Välj funktion från menyn");
         }
+
+        public static int ParkCar(int carId, int parkingSlotId)
+        {
+            int affectedRow = 0;
+
+            string sql = $"UPDATE Cars SET parkingSlotsId = {parkingSlotId} WHERE Id = {carId}";
+
+            using (var connection = new SqlConnection(connString))
+            {
+                affectedRow = connection.Execute(sql);
+            }
+
+            return affectedRow;
+        }
+
+
+        public static int RemoveCar(int carId)
+        {
+            int affectedRow = 0;
+            
+            string sql = $"DELETE Cars WHERE Id = {carId}";
+
+            using (var connection = new SqlConnection(connString))
+            {
+                affectedRow = connection.Execute(sql);
+            }
+
+            return affectedRow;
+        }
     }
 }
 
