@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
@@ -12,7 +13,6 @@ namespace Parking
     internal class Methods
     {
         static string connString = "data source=.\\SQLEXPRESS; initial catalog = Parking; persist security info = True; Integrated Security = True;";
-        new Car car = new();
 
         public static List<Models.Car> GetAllCars()
         {
@@ -29,23 +29,68 @@ namespace Parking
             }
             return cars;
         }
-        public static List<Models.Car> AddCar(List<Car> cars, Car car)
+        public static void AddCar(Car car)
         {
+            int affectedRows = 0;
             var sql = $"insert into Cars(Plate, Make, Color) values ('{car.Plate}', '{car.Make}', '{car.Color}')";
 
-            var newCar = new Models.Car
+            using (var connection = new SqlConnection(connString))
             {
-                Plate = Console.ReadLine(),
-                Make = Console.ReadLine(),
-                Color = Console.ReadLine()
-            };
+                affectedRows = connection.Execute(sql);
+            }
+        }
+        public static List<City> GetAllCities()
+        {
+            var sql = "SELECT * FROM Cities";
+            var cities = new List<Models.City>();
             using (var connection = new SqlConnection(connString))
             {
                 connection.Open();
-                cars = connection.Query<Models.Car>(sql).ToList();
+                cities = connection.Query<Models.City>(sql).ToList();
             }
-            return cars;
+            foreach (var c in cities)
+            {
+                Console.WriteLine($"{c.Id}\t{c.CityName}");
+            }
+            return cities;
         }
+
+        public static void AddCities(City city)
+        {
+            int affectedRows = 0;
+            var sql = $"insert into Cities(CityName) values ('{city.CityName}')";
+            using (var connection = new SqlConnection(connString))
+            {
+                affectedRows = connection.Execute(sql);
+            }
+        }
+
+        public static List<ParkingHouse> GetAllParkingHouses()
+        {
+            var sql = "SELECT * FROM ParkingHouses";
+            var parkingHouses = new List<Models.ParkingHouse>();
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                parkingHouses = connection.Query<Models.ParkingHouse>(sql).ToList();
+            }
+            foreach (var ph in parkingHouses)
+            {
+                Console.WriteLine($"{ph.Id}\t{ph.HouseName}   \t{ph.CityId}");
+            }
+            return parkingHouses;
+        }
+
+        public static void AddParkingHouses(ParkingHouse parkingHouse)
+        {
+            int affectedRows = 0;
+            var sql = $"insert into ParkingHouses(HouseName, CityId) values ('{parkingHouse.HouseName}', '{parkingHouse.CityId}')";
+            using (var connection = new SqlConnection(connString))
+            {
+                affectedRows = connection.Execute(sql);
+            }
+        }
+
         public static void Instructions()
         {
             Console.WriteLine("Välj funktion från menyn");
