@@ -20,12 +20,11 @@ namespace Parking
             var cars = new List<Models.Car>();
             using (var connection = new SqlConnection(connString))
             {
-                connection.Open();
                 cars = connection.Query<Models.Car>(sql).ToList();
             }
             foreach (var car in cars)
             {
-                Console.WriteLine($"{car.Id}\t{car.Plate}\t{car.Make}\t{car.Color}\t{car.ParkingSlotsId}");
+                Console.WriteLine($"Car-id: {car.Id}\t{car.Plate}\t{car.Make}\t{car.Color}\tParking-id: {car.ParkingSlotsId}");
             }
             return cars;
         }
@@ -39,9 +38,9 @@ namespace Parking
                 affectedRows = connection.Execute(sql);
             }
         }
-        public static List<City> GetAllCities()
+        public static List<City> GetCity(int cityNumber)
         {
-            var sql = "SELECT * FROM Cities";
+            var sql = $"SELECT * FROM Cities WHERE Id = ('{cityNumber}')";
             var cities = new List<Models.City>();
             using (var connection = new SqlConnection(connString))
             {
@@ -50,7 +49,24 @@ namespace Parking
             }
             foreach (var c in cities)
             {
-                Console.WriteLine($"{c.Id}\t{c.CityName}");
+                Console.WriteLine($"City: {c.CityName}");
+            }
+            Console.WriteLine();
+            return cities;
+        }
+
+        public static List<City> GetAllCities()
+        {
+            var sql = $"SELECT * FROM Cities";
+            var cities = new List<Models.City>();
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                cities = connection.Query<Models.City>(sql).ToList();
+            }
+            foreach (var c in cities)
+            {
+                Console.WriteLine($"City-id: {c.Id}\t{c.CityName}");
             }
             return cities;
         }
@@ -65,9 +81,9 @@ namespace Parking
             }
         }
 
-        public static List<ParkingHouse> GetAllParkingHouses()
+        public static List<ParkingHouse> GetAllParkingHouses(int cityNumber)
         {
-            var sql = "SELECT * FROM ParkingHouses";
+            var sql = $"SELECT * FROM ParkingHouses WHERE CityId = ('{cityNumber}')";
             var parkingHouses = new List<Models.ParkingHouse>();
             using (var connection = new SqlConnection(connString))
             {
@@ -76,7 +92,8 @@ namespace Parking
             }
             foreach (var ph in parkingHouses)
             {
-                Console.WriteLine($"{ph.Id}\t{ph.HouseName}   \t{ph.CityId}");
+                Console.WriteLine($"House-id: {ph.Id}\t{ph.HouseName}");
+                var houseIdNumber = ph.Id;
             }
             return parkingHouses;
         }
@@ -102,7 +119,7 @@ namespace Parking
             }
             foreach (var ps in parkingSlots)
             {
-                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\t{ps.ElectricOutlet}\t{ps.ParkingHouseId}");
+                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\tElectric outlet = {ps.ElectricOutlet}\tHouse-id: {ps.ParkingHouseId}"); // måste vi ha med både ps id och slotnumber?
             }
             return parkingSlots;
         }
@@ -116,11 +133,9 @@ namespace Parking
                 affectedRows = connection.Execute(sql);
             }
         }
-
-
         public static void Instructions()
         {
-            Console.WriteLine("Välj funktion från menyn");
+            Console.WriteLine("Välj funktion från menyn ");
         }
 
         public static int ParkCar(int carId, int parkingSlotId)
@@ -133,10 +148,8 @@ namespace Parking
             {
                 affectedRow = connection.Execute(sql);
             }
-
             return affectedRow;
         }
-
 
         public static int RemoveCar(int carId)
         {
@@ -148,7 +161,6 @@ namespace Parking
             {
                 affectedRow = connection.Execute(sql);
             }
-
             return affectedRow;
         }
     }
