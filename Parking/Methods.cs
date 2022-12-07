@@ -16,6 +16,7 @@ namespace Parking
 
         public static List<Models.Car> GetAllCars()
         {
+
             var sql = "SELECT * FROM Cars";
             var cars = new List<Models.Car>();
             using (var connection = new SqlConnection(connString))
@@ -98,6 +99,8 @@ namespace Parking
             return parkingHouses;
         }
 
+
+
         public static void AddParkingHouses(ParkingHouse parkingHouse)
         {
             int affectedRows = 0;
@@ -122,6 +125,42 @@ namespace Parking
                 Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\tElectric outlet = {ps.ElectricOutlet}\tHouse-id: {ps.ParkingHouseId}"); // måste vi ha med både ps id och slotnumber?
             }
             return parkingSlots;
+        }
+
+        public static List<ParkingSlot> GetAllParkingSlots2(int place)
+        {
+            var sql = $"SELECT HouseName,PS.Id,PS.ElectricOutlet,Cs.CityName,C.Plate FROM ParkingSlots PS JOIN ParkingHouses PH on ps.ParkingHouseId = PH.Id JOIN Cities Cs on ph.CityId = cs.Id LEFT JOIN Cars C on PS.Id = C.ParkingSlotsId where ParkingHouseId = {place}";
+            var parkingSlots = new List<Models.ParkingSlot>();
+            var parkingHouses = new List<Models.ParkingHouse>();
+            var cities = new List<Models.City>();
+            var cars = new List<Models.Car>();
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                parkingSlots = connection.Query<Models.ParkingSlot>(sql).ToList();
+                parkingHouses = connection.Query<Models.ParkingHouse>(sql).ToList();
+                cities = connection.Query<Models.City>(sql).ToList();
+                cars = connection.Query<Models.Car>(sql).ToList();
+            }
+
+            foreach (var p in parkingHouses)
+            {
+                foreach (var c in cities)
+                {
+
+                    foreach (var car in cars)
+                    {
+                        Console.WriteLine($"ParkingHouse Name = {p.HouseName}\t Cityname: {c.CityName}\t Occupied by: {car.Plate}"); // måste vi ha med både ps id och slotnumber?
+                    }
+                    break;
+                }
+                break;
+            }
+            foreach (var ps in parkingSlots)
+            {
+                Console.WriteLine($"SlotId: {ps.Id}");
+            }
+                return parkingSlots;
         }
 
         public static void AddParkingSlots(ParkingSlot parkingSlot)
@@ -154,7 +193,7 @@ namespace Parking
         public static int RemoveCar(int carId)
         {
             int affectedRow = 0;
-            
+
             string sql = $"DELETE Cars WHERE Id = {carId}";
 
             using (var connection = new SqlConnection(connString))

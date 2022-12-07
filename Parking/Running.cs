@@ -16,11 +16,8 @@ namespace Parking
             {
                 Console.WriteLine("Meny");
                 Console.WriteLine("==========");
-                Console.WriteLine("[A] Choose specific city");
+                Console.WriteLine("[A] Show all cities");
                 Console.WriteLine("[S] Add a car.");
-                Console.WriteLine("[D] Add parkinghouse.");
-                Console.WriteLine("[F] Add city.");
-                Console.WriteLine("[G] Add Parkingslots");
                 Console.WriteLine("[H] Park an existing car");
                 Console.WriteLine("[J] Remove a parked car");
                 Console.WriteLine("[Q] Quit.");
@@ -34,27 +31,51 @@ namespace Parking
                 {
                     case 'a':
                         Methods.GetAllCities();
-                        Console.WriteLine("Input city-id: ");
-                        int cityNumber = Convert.ToInt32(Console.ReadLine()); //ternary ifall du ej anger ett stadsid så visas alla? 
-                        Methods.GetCity(cityNumber);
-                        Methods.GetAllParkingHouses(cityNumber);
-                        //get all parkingslots där ph-id ==
-                        Console.ReadLine();
+                        Console.WriteLine($"\nPress [A] to to show parkinghouses in specific city." +
+                                          $"\nPress [S] to add another City ." +
+                                          $"\nPress [D] to add a Parkinghouse." +
+                                          $"\nPress [Q] to get back to menu");
+                        key = Console.ReadKey(true);
+                        bool runCities = false;
+                        while (!runCities)
+                        {
+                            switch (key.KeyChar)
+                            {
+                                case 'a':
+                                    Console.WriteLine("Input city-id: ");
+                                    int cityNumber = Convert.ToInt32(Console.ReadLine());
+                                    Methods.GetCity(cityNumber);
+                                    Methods.GetAllParkingHouses(cityNumber);
+                                    break;
+                                case 's':
+                                    AddCity();
+                                    break;
+                                case 'd':
+                                    AddParkingHouse();
+                                    Console.WriteLine("Add parkingslots.");
+                                    AddParkingSlots();
+                                    break;
+                                case 'q':
+                                    break;
+                                default:
+                                    Methods.Instructions();
+                                    break;
+                            }
+                            Console.ReadLine();
+                            runCities = true;
+                        }
                         break;
                     case 's':
                         AddCar();
                         break;
-                    case 'd':
-                        AddParkingHouse();
-                        break;
-                    case 'f':
-                        AddCity();
-                        break;
-                    case 'g':
-                        AddParkingSlots();
-                        break;
                     case 'h':
-                        Methods.GetAllParkingSlots();
+                        Console.WriteLine("Which city do you want to park?");
+                        Methods.GetAllCities();
+                        Console.Write("Cityid: "); int whichCity = Convert.ToInt32(Console.ReadLine());
+                        Methods.GetAllParkingHouses(whichCity);
+                        Console.WriteLine("Which parkinghouse?");
+                        Console.Write("Houseid: "); int parkingSlot = Convert.ToInt32(Console.ReadLine());
+                        Methods.GetAllParkingSlots2(parkingSlot);
                         ParkCar();
                         break;
                     case 'j':
@@ -100,6 +121,7 @@ namespace Parking
                 CityId = cityId
             };
             Methods.AddParkingHouses(parkingHouse);
+            Methods.GetAllParkingHouses(cityId);
         }
         private static void AddCity()
         {
