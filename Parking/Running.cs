@@ -16,8 +16,6 @@ namespace Parking
             {
                 List<ElectricSlots> slots = new List<ElectricSlots>();  
 
-                Methods.A(slots);
-
 
                 Console.WriteLine("Meny");
                 Console.WriteLine("==========");
@@ -51,6 +49,9 @@ namespace Parking
                                     int cityNumber = Convert.ToInt32(Console.ReadLine());
                                     Methods.GetCity(cityNumber);
                                     Methods.GetAllParkingHouses(cityNumber);
+                                    Console.WriteLine("To se electric spots: ");
+                                    int elSpots = Convert.ToInt32(Console.ReadLine());
+                                    Methods.A(slots, elSpots);
                                     break;
                                 case 's':
                                     AddCity();

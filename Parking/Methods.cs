@@ -128,9 +128,9 @@ namespace Parking
             return electricSlots;
         }
 
-        public static int A(List<ElectricSlots> electricSlots)
+        public static int A(List<ElectricSlots> electricSlots, int city)
         {
-            string sql = "SELECT \r\nCOUNT(ElectricOutlet) as 'Number of Electric Outlet'\r\n,Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nWHERE ElectricOutlet = 1\r\nGROUP BY hs.HouseName, C.CityName\r\n";
+            string sql = $"SELECT \r\nCOUNT(ElectricOutlet) as 'Number of Electric Outlet'\r\n,Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nWHERE ElectricOutlet = 1 and HS.Id = {city}\r\nGROUP BY hs.HouseName, C.CityName\r\n";
             int count = 0;
 
 
@@ -146,7 +146,7 @@ namespace Parking
 
             foreach (ElectricSlots es in electricSlots)
             {
-            Console.WriteLine($"{count}\t{es.CityName}");
+                Console.WriteLine($"{count}\t{es.CityName}");
 
             }
 
