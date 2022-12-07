@@ -99,8 +99,6 @@ namespace Parking
             return parkingHouses;
         }
 
-
-
         public static void AddParkingHouses(ParkingHouse parkingHouse)
         {
             int affectedRows = 0;
@@ -109,6 +107,51 @@ namespace Parking
             {
                 affectedRows = connection.Execute(sql);
             }
+        }
+
+        public static List<ElectricSlots> GetAllElectricOutlets()
+        {
+            var sql = $"SELECT COUNT(ElectricOutlet) as 'Number of Electric Outlet',Hs.HouseName,C.CityName FROM cities C JOIN ParkingHouses HS on C.Id = hs.CityId JOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId WHERE ElectricOutlet = 1 GROUP BY hs.HouseName, C.CityName";
+            var electricSlots = new List<ElectricSlots>();
+
+
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                electricSlots = connection.Query<Models.ElectricSlots>(sql).ToList();
+            }
+
+            foreach (var es in electricSlots)
+            {
+                Console.WriteLine($"There are {es.ElectricOutlet} slots with electrical outlets.");
+            }
+            return electricSlots;
+        }
+
+        public static int A(List<ElectricSlots> electricSlots)
+        {
+            string sql = "SELECT \r\nCOUNT(ElectricOutlet) as 'Number of Electric Outlet'\r\n,Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nWHERE ElectricOutlet = 1\r\nGROUP BY hs.HouseName, C.CityName\r\n";
+            int count = 0;
+
+
+            using (SqlConnection thisConnection = new SqlConnection(connString))
+            {
+                using (SqlCommand cmdCount = new SqlCommand(sql, thisConnection))
+                {
+                    thisConnection.Open();
+                    electricSlots = thisConnection.Query<Models.ElectricSlots>(sql).ToList();
+                    count = (int)cmdCount.ExecuteScalar();
+                }
+            }
+
+            foreach (ElectricSlots es in electricSlots)
+            {
+            Console.WriteLine($"{count}\t{es.CityName}");
+
+            }
+
+
+            return count;
         }
 
         public static List<ParkingSlot> GetAllParkingSlots()

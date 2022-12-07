@@ -14,6 +14,11 @@ namespace Parking
         {
             while (true)
             {
+                List<ElectricSlots> slots = new List<ElectricSlots>();  
+
+                Methods.A(slots);
+
+
                 Console.WriteLine("Meny");
                 Console.WriteLine("==========");
                 Console.WriteLine("[A] Show all cities");
