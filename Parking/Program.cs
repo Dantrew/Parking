@@ -6,8 +6,6 @@
         {
             while (true)
             {
-                Methods.GetAllElectricOutlets();
-
                 Running.Runningprogram();
             }
         }

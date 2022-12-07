@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Parking
 
         public static List<Models.Car> GetAllCars()
         {
-
+            int count = 2;
             var sql = "SELECT * FROM Cars";
             var cars = new List<Models.Car>();
             using (var connection = new SqlConnection(connString))
@@ -25,7 +26,9 @@ namespace Parking
             }
             foreach (var car in cars)
             {
+                Console.SetCursorPosition(60,count);
                 Console.WriteLine($"Car-id: {car.Id}\t{car.Plate}\t{car.Make}\t{car.Color}\tParking-id: {car.ParkingSlotsId}");
+                count++;
             }
             return cars;
         }
@@ -128,31 +131,24 @@ namespace Parking
             return electricSlots;
         }
 
-        public static int A(List<ElectricSlots> electricSlots, int city)
+        public static List<ElectricSlots> GetAllElectricCitySlots()
         {
-            string sql = $"SELECT \r\nCOUNT(ElectricOutlet) as 'Number of Electric Outlet'\r\n,Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nWHERE ElectricOutlet = 1 and HS.Id = {city}\r\nGROUP BY hs.HouseName, C.CityName\r\n";
-            int count = 0;
-
-
-            using (SqlConnection thisConnection = new SqlConnection(connString))
+            var sql = $"SELECT COUNT(ElectricOutlet) as 'ElectricOutlet',C.CityName FROM cities C JOIN ParkingHouses HS on C.Id = hs.CityId JOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId WHERE ElectricOutlet = 1 GROUP BY C.CityName Order BY C.CityName";
+            var electricSlots = new List<ElectricSlots>();
+            using (var connection = new SqlConnection(connString))
             {
-                using (SqlCommand cmdCount = new SqlCommand(sql, thisConnection))
-                {
-                    thisConnection.Open();
-                    electricSlots = thisConnection.Query<Models.ElectricSlots>(sql).ToList();
-                    count = (int)cmdCount.ExecuteScalar();
-                }
+                connection.Open();
+                electricSlots = connection.Query<Models.ElectricSlots>(sql).ToList();
             }
 
-            foreach (ElectricSlots es in electricSlots)
+            foreach (var es in electricSlots)
             {
-                Console.WriteLine($"{count}\t{es.CityName}");
-
+                Console.WriteLine($"{es.CityName} has a total of {es.ElectricOutlet} electrical spots.");
             }
 
-
-            return count;
+            return electricSlots;
         }
+
 
         public static List<ParkingSlot> GetAllParkingSlots()
         {
@@ -165,7 +161,7 @@ namespace Parking
             }
             foreach (var ps in parkingSlots)
             {
-                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\tElectric outlet = {ps.ElectricOutlet}\tHouse-id: {ps.ParkingHouseId}"); // måste vi ha med både ps id och slotnumber?
+                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\tElectric outlet = {ps.ElectricOutlet}\tHouse-id: {ps.ParkingHouseId}"); 
             }
             return parkingSlots;
         }
@@ -182,7 +178,7 @@ namespace Parking
 
             foreach (var p in parkingSlotsStatus)
             {
-                Console.WriteLine($"SlotId: {p.Id}\tParkingHouse Name: {p.HouseName}\t Cityname: {p.CityName}\t Occupied by: {p.Plate}"); // måste vi ha med både ps id och slotnumber?
+                Console.WriteLine($"SlotId: {p.Id}\t Occupied by: {p.Plate}"); 
             }
             return parkingSlotsStatus;
         }
