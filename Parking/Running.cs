@@ -15,25 +15,26 @@ namespace Parking
             while (true)
             {
                 List<ElectricSlots> slots = new List<ElectricSlots>();
-              
+
                 Console.WriteLine($" ==========Menu===========" +
                 "\n                         " +
-                "\n [A] Show all cities" + 
+                "\n [A] Show all cities" +
                 "\n [S] Show all parkingspots" +
                 "\n [D] Add a car" +
-                "\n [F] Remove a parked car" +           
+                "\n [F] Remove a parked car" +
                 "\n [Q] Quit." +
                 "\n                         " +
-                "\n =========================");               
+                "\n =========================");
                 Methods.GetAllCars();
-                Console.SetCursorPosition(0,10);
-                
+                Console.SetCursorPosition(0, 10);
+
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 switch (key.KeyChar)
                 {
                     case 'a':
                         Methods.GetAllCities();
+                        Console.WriteLine($"\n==================================================");
                         Console.WriteLine($"\nPress [A] to to show parkinghouses in specific city" +
                         "\nPress [S] to add another City" +
                         "\nPress [D] to add a Parkinghouse" +
@@ -45,15 +46,17 @@ namespace Parking
                             switch (key.KeyChar)
                             {
                                 case 'a':
-                                    Console.WriteLine();
-                                    Console.WriteLine("Input city-id: ");
+                                    Console.WriteLine($"\n==================================================\n");
+                                    Console.Write("Input city-id: ");
                                     int cityNumber = Convert.ToInt32(Console.ReadLine());
                                     Methods.GetCity(cityNumber);
                                     Methods.GetAllParkingHouses(cityNumber);
                                     Console.WriteLine();
-                                    Console.WriteLine("Which parkinghouse?");
+                                    Console.WriteLine($"==================================================\n\nWhich parkinghouse?");
                                     Console.Write("Houseid: "); int phId = Convert.ToInt32(Console.ReadLine());
+                                    Console.WriteLine();
                                     Methods.ParkingStatus(phId);
+                                    Console.WriteLine($"\n==================================================\n");
                                     ParkCar();
                                     break;
                                 case 's':
@@ -76,7 +79,7 @@ namespace Parking
                         break;
                     case 's':
                         Methods.GetAllElectricOutlets();
-                        Console.WriteLine("=========================");
+                        Console.WriteLine("==================================================");
                         Methods.GetAllElectricCitySlots();
                         Console.ReadKey();
                         break;
@@ -166,12 +169,23 @@ namespace Parking
         }
         private static void ParkCar()
         {
-            Console.WriteLine("Which car do you want to park?");
-            int carId = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Which parkingspot?");
-            int slotId = Convert.ToInt32(Console.ReadLine());
-
-            Methods.ParkCar(carId, slotId);
+            Console.WriteLine("Do you want to park a car? y/n");
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            switch (key.KeyChar)
+            {
+                case 'y':
+                    Console.WriteLine("Which car do you want to park?");
+                    int carId = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Which parkingspot?");
+                    int slotId = Convert.ToInt32(Console.ReadLine());
+                    Methods.ParkCar(carId, slotId);
+                    break;
+                case 'n':
+                    break;
+                default:
+                    Methods.Instructions();
+                    break;
+            }
         }
         private static void RemoveCar()
         {
