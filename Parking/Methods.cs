@@ -111,9 +111,8 @@ namespace Parking
 
         public static List<ElectricSlots> GetAllElectricOutlets()
         {
-            var sql = $"SELECT COUNT(ElectricOutlet) as 'Number of Electric Outlet',Hs.HouseName,C.CityName FROM cities C JOIN ParkingHouses HS on C.Id = hs.CityId JOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId WHERE ElectricOutlet = 1 GROUP BY hs.HouseName, C.CityName";
+            var sql = $"SELECT COUNT(ElectricOutlet) as 'ElectricOutlet',Hs.HouseName,C.CityName FROM cities C JOIN ParkingHouses HS on C.Id = hs.CityId JOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId WHERE ElectricOutlet = 1 GROUP BY hs.HouseName, C.CityName";
             var electricSlots = new List<ElectricSlots>();
-
 
             using (var connection = new SqlConnection(connString))
             {
@@ -123,8 +122,9 @@ namespace Parking
 
             foreach (var es in electricSlots)
             {
-                Console.WriteLine($"There are {es.ElectricOutlet} slots with electrical outlets.");
+                Console.WriteLine($"{es.HouseName} in {es.CityName} has {es.ElectricOutlet} electrical outlets.");
             }
+
             return electricSlots;
         }
 

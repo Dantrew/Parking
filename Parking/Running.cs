@@ -49,9 +49,10 @@ namespace Parking
                                     int cityNumber = Convert.ToInt32(Console.ReadLine());
                                     Methods.GetCity(cityNumber);
                                     Methods.GetAllParkingHouses(cityNumber);
-                                    Console.WriteLine("To se electric spots: ");
-                                    int elSpots = Convert.ToInt32(Console.ReadLine());
-                                    Methods.A(slots, elSpots);
+                                    Console.WriteLine("Which parkinghouse?");
+                                    Console.Write("Houseid: "); int phId = Convert.ToInt32(Console.ReadLine());
+                                    Methods.ParkingStatus(phId);
+                                    ParkCar();
                                     break;
                                 case 's':
                                     AddCity();
@@ -61,6 +62,7 @@ namespace Parking
                                     Console.WriteLine("Add parkingslots.");
                                     AddParkingSlots();
                                     break;
+
                                 case 'q':
                                     break;
                                 default:

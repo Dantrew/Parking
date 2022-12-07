@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parking.Models
 {
-    internal class ElectricSlots
+    internal class AvailableSlots
     {
-        public string CityName { get; set; }
-        public int ElectricOutlet { get; set; }
     }
 }
