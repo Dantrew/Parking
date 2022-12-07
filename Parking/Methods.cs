@@ -14,7 +14,6 @@ namespace Parking
     internal class Methods
     {
         static string connString = "data source=.\\SQLEXPRESS; initial catalog = Parking; persist security info = True; Integrated Security = True;";
-
         public static List<Models.Car> GetAllCars()
         {
             int count = 2;
@@ -87,7 +86,7 @@ namespace Parking
 
         public static List<ParkingHouse> GetAllParkingHouses(int cityNumber)
         {
-            var sql = $"SELECT * FROM ParkingHouses WHERE CityId = ('{cityNumber}')";
+            var sql = $"SELECT \r\nMAX(PS.SlotNumber) - Count(ca.Plate) as 'FreeSlots'\r\n,Hs.Id, Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nLEFT JOIN Cars Ca on  PS.Id = Ca.ParkingSlotsId\r\nWHERE C.Id = {cityNumber}\r\nGROUP BY hs.HouseName, C.CityName, Hs.Id";
             var parkingHouses = new List<Models.ParkingHouse>();
             using (var connection = new SqlConnection(connString))
             {
@@ -96,8 +95,7 @@ namespace Parking
             }
             foreach (var ph in parkingHouses)
             {
-                Console.WriteLine($"House-id: {ph.Id}\t{ph.HouseName}");
-                var houseIdNumber = ph.Id;
+                Console.WriteLine($"House-id: {ph.Id}\t{ph.HouseName}, with {ph.FreeSlots} free spots");
             }
             return parkingHouses;
         }
@@ -126,6 +124,7 @@ namespace Parking
             foreach (var es in electricSlots)
             {
                 Console.WriteLine($"{es.HouseName} in {es.CityName} has {es.ElectricOutlet} electrical outlets.");
+                Console.WriteLine();
             }
 
             return electricSlots;
@@ -144,28 +143,11 @@ namespace Parking
             foreach (var es in electricSlots)
             {
                 Console.WriteLine($"{es.CityName} has a total of {es.ElectricOutlet} electrical spots.");
+                Console.WriteLine();
             }
 
             return electricSlots;
         }
-
-
-        public static List<ParkingSlot> GetAllParkingSlots()
-        {
-            var sql = "SELECT * FROM ParkingSlots";
-            var parkingSlots = new List<Models.ParkingSlot>();
-            using (var connection = new SqlConnection(connString))
-            {
-                connection.Open();
-                parkingSlots = connection.Query<Models.ParkingSlot>(sql).ToList();
-            }
-            foreach (var ps in parkingSlots)
-            {
-                Console.WriteLine($"{ps.Id}\t{ps.SlotNumber}\tElectric outlet = {ps.ElectricOutlet}\tHouse-id: {ps.ParkingHouseId}"); 
-            }
-            return parkingSlots;
-        }
-
         public static List<ParkingSlotsStatus> ParkingStatus(int place)
         {
             var sql = $"SELECT HouseName,PS.Id,PS.ElectricOutlet,Cs.CityName,C.Plate FROM ParkingSlots PS JOIN ParkingHouses PH on ps.ParkingHouseId = PH.Id JOIN Cities Cs on ph.CityId = cs.Id LEFT JOIN Cars C on PS.Id = C.ParkingSlotsId where ParkingHouseId = {place}";

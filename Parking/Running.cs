@@ -16,28 +16,28 @@ namespace Parking
             {
                 List<ElectricSlots> slots = new List<ElectricSlots>();
               
-                Console.WriteLine("Meny");
-                Console.WriteLine("==========");
-                Console.WriteLine("[A] Show all cities");
-                Console.WriteLine("[S] Show all parkingspots");
-                Console.WriteLine("[D] Add a car.");
-                Console.WriteLine("[F] Remove a parked car");             
-                Console.WriteLine("[Q] Quit.");
-                Console.WriteLine("=========================");               
+                Console.WriteLine($" ==========Menu===========" +
+                "\n                         " +
+                "\n [A] Show all cities" + 
+                "\n [S] Show all parkingspots" +
+                "\n [D] Add a car" +
+                "\n [F] Remove a parked car" +           
+                "\n [Q] Quit." +
+                "\n                         " +
+                "\n =========================");               
                 Methods.GetAllCars();
-                Console.SetCursorPosition(0,8);
+                Console.SetCursorPosition(0,10);
                 
-
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 switch (key.KeyChar)
                 {
                     case 'a':
                         Methods.GetAllCities();
-                        Console.WriteLine($"\nPress [A] to to show parkinghouses in specific city." +
-                                          $"\nPress [S] to add another City ." +
-                                          $"\nPress [D] to add a Parkinghouse." +
-                                          $"\nPress [Q] to get back to menu");
+                        Console.WriteLine($"\nPress [A] to to show parkinghouses in specific city" +
+                        "\nPress [S] to add another City" +
+                        "\nPress [D] to add a Parkinghouse" +
+                        "\nPress [Q] to get back to menu");
                         key = Console.ReadKey(true);
                         bool runCities = false;
                         while (!runCities)
@@ -45,10 +45,12 @@ namespace Parking
                             switch (key.KeyChar)
                             {
                                 case 'a':
+                                    Console.WriteLine();
                                     Console.WriteLine("Input city-id: ");
                                     int cityNumber = Convert.ToInt32(Console.ReadLine());
                                     Methods.GetCity(cityNumber);
                                     Methods.GetAllParkingHouses(cityNumber);
+                                    Console.WriteLine();
                                     Console.WriteLine("Which parkinghouse?");
                                     Console.Write("Houseid: "); int phId = Convert.ToInt32(Console.ReadLine());
                                     Methods.ParkingStatus(phId);
@@ -62,7 +64,6 @@ namespace Parking
                                     Console.WriteLine("Add parkingslots.");
                                     AddParkingSlots();
                                     break;
-
                                 case 'q':
                                     break;
                                 default:
@@ -75,7 +76,7 @@ namespace Parking
                         break;
                     case 's':
                         Methods.GetAllElectricOutlets();
-                        Console.WriteLine("----------------");
+                        Console.WriteLine("=========================");
                         Methods.GetAllElectricCitySlots();
                         Console.ReadKey();
                         break;
