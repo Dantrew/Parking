@@ -127,40 +127,21 @@ namespace Parking
             return parkingSlots;
         }
 
-        public static List<ParkingSlot> GetAllParkingSlots2(int place)
+        public static List<ParkingSlotsStatus> ParkingStatus(int place)
         {
             var sql = $"SELECT HouseName,PS.Id,PS.ElectricOutlet,Cs.CityName,C.Plate FROM ParkingSlots PS JOIN ParkingHouses PH on ps.ParkingHouseId = PH.Id JOIN Cities Cs on ph.CityId = cs.Id LEFT JOIN Cars C on PS.Id = C.ParkingSlotsId where ParkingHouseId = {place}";
-            var parkingSlots = new List<Models.ParkingSlot>();
-            var parkingHouses = new List<Models.ParkingHouse>();
-            var cities = new List<Models.City>();
-            var cars = new List<Models.Car>();
+            var parkingSlotsStatus = new List<Models.ParkingSlotsStatus>();
             using (var connection = new SqlConnection(connString))
             {
                 connection.Open();
-                parkingSlots = connection.Query<Models.ParkingSlot>(sql).ToList();
-                parkingHouses = connection.Query<Models.ParkingHouse>(sql).ToList();
-                cities = connection.Query<Models.City>(sql).ToList();
-                cars = connection.Query<Models.Car>(sql).ToList();
+                parkingSlotsStatus = connection.Query<Models.ParkingSlotsStatus>(sql).ToList();
             }
 
-            foreach (var p in parkingHouses)
+            foreach (var p in parkingSlotsStatus)
             {
-                foreach (var c in cities)
-                {
-
-                    foreach (var car in cars)
-                    {
-                        Console.WriteLine($"ParkingHouse Name = {p.HouseName}\t Cityname: {c.CityName}\t Occupied by: {car.Plate}"); // måste vi ha med både ps id och slotnumber?
-                    }
-                    break;
-                }
-                break;
+                Console.WriteLine($"SlotId: {p.Id}\tParkingHouse Name: {p.HouseName}\t Cityname: {p.CityName}\t Occupied by: {p.Plate}"); // måste vi ha med både ps id och slotnumber?
             }
-            foreach (var ps in parkingSlots)
-            {
-                Console.WriteLine($"SlotId: {ps.Id}");
-            }
-                return parkingSlots;
+            return parkingSlotsStatus;
         }
 
         public static void AddParkingSlots(ParkingSlot parkingSlot)

@@ -75,7 +75,7 @@ namespace Parking
                         Methods.GetAllParkingHouses(whichCity);
                         Console.WriteLine("Which parkinghouse?");
                         Console.Write("Houseid: "); int parkingSlot = Convert.ToInt32(Console.ReadLine());
-                        Methods.GetAllParkingSlots2(parkingSlot);
+                        Methods.ParkingStatus(parkingSlot);
                         ParkCar();
                         break;
                     case 'j':
