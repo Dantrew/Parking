@@ -239,10 +239,10 @@ namespace Parking
         public static void MenuOptions()
         {
             Console.WriteLine($"          " +
-                        "\nPress [A] to to show parkinghouses in specific city" +
-                        "\nPress [S] to add another City" +
-                        "\nPress [D] to add a Parkinghouse" +
-                        "\nPress [Q] to get back to menu");
+            "\nPress [A] to to show parkinghouses in specific city" +
+            "\nPress [S] to add another City" +
+            "\nPress [D] to add a Parkinghouse" +
+            "\nPress [Q] to get back to menu");
         }
 
     }
