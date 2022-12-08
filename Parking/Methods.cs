@@ -93,7 +93,7 @@ namespace Parking
 
         public static List<ParkingHouse> GetAllParkingHouses(int cityNumber)
         {
-            var sql = $"SELECT \r\nMAX(PS.SlotNumber) - Count(ca.Plate) as 'FreeSlots'\r\n,Hs.Id, Hs.HouseName\r\n,C.CityName\r\nFROM cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nLEFT JOIN Cars Ca on  PS.Id = Ca.ParkingSlotsId\r\nWHERE C.Id = {cityNumber}\r\nGROUP BY hs.HouseName, C.CityName, Hs.Id";
+            var sql = $"SELECT \r\nHS.Id\r\n,MAX(Ps.SlotNumber) as 'ParkingSlotTotal'\r\n,MAX(PS.SlotNumber) - Count(ca.Plate) as 'FreeSlots'\r\n,SUM(CAST(PS.ElectricOutlet AS INT)) - COUNT(CASE WHEN ps.ElectricOutlet = 1 THEN ca.Plate END) as 'FreeElectricOutlet'\r\n,Hs.HouseName\r\n,C.CityName\r\nFROM Cities C\r\nJOIN ParkingHouses HS on C.Id = hs.CityId\r\nJOIN ParkingSlots PS on HS.Id = ps.ParkingHouseId\r\nLEFT JOIN Cars Ca on  PS.Id = Ca.ParkingSlotsId\r\nwhere c.Id = {cityNumber}\r\nGROUP BY HS.ID, hs.HouseName, C.CityName";
             var parkingHouses = new List<Models.ParkingHouse>();
             using (var connection = new SqlConnection(connString))
             {
@@ -102,7 +102,7 @@ namespace Parking
             }
             foreach (var ph in parkingHouses)
             {
-                Console.WriteLine($"House-id: {ph.Id}\t{ph.HouseName}, with {ph.FreeSlots} free spots");
+                Console.WriteLine($"House-id: {ph.Id}\t{ph.HouseName}, with {ph.FreeSlots} free spots, and {ph.FreeElectricOutlet} has an electric outlet.");
             }
             return parkingHouses;
         }

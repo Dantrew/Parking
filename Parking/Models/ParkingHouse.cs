@@ -14,5 +14,6 @@ namespace Parking.Models
         public string HouseName { get; set; }
         public string CityName { get; set; }
         public int FreeSlots { get; set; }
+        public int FreeElectricOutlet { get; set; }
     }
 }
