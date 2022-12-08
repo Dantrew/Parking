@@ -16,7 +16,12 @@ namespace Parking
         static string connString = "data source=.\\SQLEXPRESS; initial catalog = Parking; persist security info = True; Integrated Security = True;";
         public static List<Models.Car> GetAllCars()
         {
-            int count = 2;
+            int count = 1;
+            Console.SetCursorPosition(49, (count - 1));
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("===== Cars ===========================================");
+            Console.ResetColor();
+
             var sql = "SELECT * FROM Cars";
             var cars = new List<Models.Car>();
             using (var connection = new SqlConnection(connString))
@@ -25,10 +30,12 @@ namespace Parking
             }
             foreach (var car in cars)
             {
-                Console.SetCursorPosition(60,count);
+                Console.SetCursorPosition(50, count);
                 Console.WriteLine($"Car-id: {car.Id}\t{car.Plate}\t{car.Make}\t{car.Color}\tParking-id: {car.ParkingSlotsId}");
                 count++;
             }
+            Console.SetCursorPosition(49, (count + 1));
+            LongRowBreak();
             return cars;
         }
         public static void AddCar(Car car)
@@ -160,7 +167,7 @@ namespace Parking
 
             foreach (var p in parkingSlotsStatus)
             {
-                Console.WriteLine($"SlotId: {p.Id}\t Occupied by: {p.Plate}"); 
+                Console.WriteLine($"SlotId: {p.Id}\t Occupied by: {p.Plate}");
             }
             return parkingSlotsStatus;
         }
@@ -204,6 +211,40 @@ namespace Parking
             }
             return affectedRow;
         }
+        public static void RowBreak()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("=========================");
+            Console.ResetColor();
+        }
+        public static void LongRowBreak()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("======================================================");
+            Console.ResetColor();
+        }
+        public static void MainMenuOptions()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine($"========= Menu ==========");
+            Console.ResetColor();
+            Console.WriteLine($"" +
+            "\n [A] Show all cities" +
+            "\n [S] Show all parkingspots" +
+            "\n [D] Add a car" +
+            "\n [F] Remove a parked car" +
+            "\n [Q] Quit." +
+            "\n                         ");
+        }
+        public static void MenuOptions()
+        {
+            Console.WriteLine($"          " +
+                        "\nPress [A] to to show parkinghouses in specific city" +
+                        "\nPress [S] to add another City" +
+                        "\nPress [D] to add a Parkinghouse" +
+                        "\nPress [Q] to get back to menu");
+        }
+
     }
 }
 
